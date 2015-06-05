@@ -91,15 +91,15 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint navShadowPaint = new Paint();
 
 	
-	private static final float defaultNavScale = 160.0f; 
-	private static final float defaultNavX = 619.0f;
-	private static final float defaultNavY = 419.0f;
-	private static final float minNavScale = 40.0f;
+	private static final float defaultNavScale = 227.0f; 
+	private static final float defaultNavX = 640.0f;
+	private static final float defaultNavY = 381.0f;
+	private static final float minNavScale = 98.0f;
 	private static final int maxNavScale = 542;
 	
 	//background position
-	private static final int bgX = 264;
-	private static final int bgY = 124;
+	private static final int bgX = 371;
+	private static final int bgY = 122;
 	
 	//boundary limit // default 16:9 full screen
 	private static final int boundaryLeft = 98;
@@ -200,7 +200,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		
 		
-		backgroundImage = BitmapFactory.decodeResource(getResources(), R.drawable.gnm01_bg);
+		backgroundImage = BitmapFactory.decodeResource(getResources(), R.drawable.eap_08_bg);
 		
 		
 		arrowUp = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_arrow_up);

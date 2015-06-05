@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="kr.tangomike.leeum2013.wheel.zoom.permanent"
+      package="kr.tangomike.leeum2015.eap07"
       android:versionName="1.0" android:versionCode="4">
       
      	<uses-sdk android:minSdkVersion="12" android:targetSdkVersion="17"></uses-sdk>
