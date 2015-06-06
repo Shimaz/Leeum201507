@@ -15,7 +15,7 @@
  along with TUIOdroid.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package kr.tangomike.hoam.hdnavi20131202;
+package kr.tangomike.leeum2015.eap15;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -23,7 +23,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-import kr.tangomike.hoam.hdnavi20131202.TuioPoint;
+import kr.tangomike.leeum2015.eap15.TuioPoint;
 
 
 import tuioDroid.osc.OSCInterface;
@@ -91,21 +91,21 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint navShadowPaint = new Paint();
 
 	
-	private static final float defaultNavScale = 146.0f; 
+	private static final float defaultNavScale = 345.0f / 2.0f; 
 	private static final float defaultNavX = 400.0f;
-	private static final float defaultNavY = 584.0f;
-	private static final float minNavScale = 51.0f / 2.0f;
-	private static final float maxNavScale = 551.0f / 2.0f;
+	private static final float defaultNavY = 640.0f;
+	private static final float minNavScale = 155.0f / 2.0f;
+	private static final float maxNavScale = 593.0f / 2.0f;
 	
 	//background position
-	private static final int bgX = 125;
-	private static final int bgY = 7;
+	private static final int bgX = 16;
+	private static final int bgY = 113;
 	
 	//boundary limit 
-	private static final int boundaryLeft = 125;
-	private static final int boundaryTop = 7;
-	private static final int boundaryRight = 676;
-	private static final int boundaryBottom = 1224;
+	private static final int boundaryLeft = 16;
+	private static final int boundaryTop = 113;
+	private static final int boundaryRight = 784;
+	private static final int boundaryBottom = 1167;
 	
 	
 	private float navX = defaultNavX;
@@ -201,7 +201,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		
 		
-		backgroundImage = BitmapFactory.decodeResource(getResources(), R.drawable.bg_portrait);
+		backgroundImage = BitmapFactory.decodeResource(getResources(), R.drawable.eap_15_bg);
 		
 		arrowUp = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_arrow_up);
 		arrowDown = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_arrow_down);

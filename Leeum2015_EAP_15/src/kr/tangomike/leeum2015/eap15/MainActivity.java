@@ -17,7 +17,7 @@
  along with TUIOdroid.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package kr.tangomike.hoam.hdnavi20131202;
+package kr.tangomike.leeum2015.eap15;
 
 import android.app.*;
 import android.content.*;
@@ -114,20 +114,20 @@ public class MainActivity extends Activity {
         frameLayout.setLayoutParams(frameLP);
         frameLayout.addView(touchView);
         
-        ImageView logoHoam = new ImageView(this);
-        logoHoam.setImageResource(R.drawable.logo_hoam);
-        logoHoam.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        logoHoam.setX(692);
-        logoHoam.setY(1178);
-        frameLayout.addView(logoHoam);
-        
-        
-        ImageView guideVertical = new ImageView(this);
-        guideVertical.setImageResource(R.drawable.guide_vertical);
-        guideVertical.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        guideVertical.setX(28);
-        guideVertical.setY(23);
-        frameLayout.addView(guideVertical);
+//        ImageView logoHoam = new ImageView(this);
+//        logoHoam.setImageResource(R.drawable.logo_hoam);
+//        logoHoam.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        logoHoam.setX(692);
+//        logoHoam.setY(1178);
+//        frameLayout.addView(logoHoam);
+//        
+//        
+//        ImageView guideVertical = new ImageView(this);
+//        guideVertical.setImageResource(R.drawable.guide_vertical);
+//        guideVertical.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        guideVertical.setX(28);
+//        guideVertical.setY(23);
+//        frameLayout.addView(guideVertical);
 
 
         
@@ -201,7 +201,7 @@ public class MainActivity extends Activity {
 	 */
     private void openSettingsActivity (){
     	Intent myIntent = new Intent();
-    	myIntent.setClassName("kr.tangomike.hoam.hdnavi20131202", "kr.tangomike.hoam.hdnavi20131202.SettingsActivity"); 
+    	myIntent.setClassName("kr.tangomike.leeum2015.eap15", "kr.tangomike.leeum2015.eap15.SettingsActivity"); 
     	myIntent.putExtra("IP_in", oscIP);
     	myIntent.putExtra("Port_in", oscPort);
     	myIntent.putExtra("ExtraInfo", this.drawAdditionalInfo);
@@ -217,7 +217,7 @@ public class MainActivity extends Activity {
 	 */
     private void openHelpActivity (){
     	Intent myIntent = new Intent();
-     	myIntent.setClassName("kr.tangomike.hoam.hdnavi20131202", "kr.tangomike.hoam.hdnavi20131202.HelpActivity");
+     	myIntent.setClassName("kr.tangomike.leeum2015.eap15", "kr.tangomike.leeum2015.eap15.HelpActivity");
      	showSettings = true;
      	startActivity(myIntent);  
     }
