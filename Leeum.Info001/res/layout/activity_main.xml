@@ -2,8 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/info_01_img_bg"
     tools:context="MainActivity" >
+    
+    
+    <ImageView
+        android:src="@drawable/eap_2_image"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/imgDesc"
+        />
+        
+        
     
     <!-- Main Overlay Image -->
     <ImageView
@@ -62,93 +73,8 @@
         >
     </ImageView>
     
-    <ImageView
-        android:id="@+id/img_overlay05"
-        android:src="@drawable/info_01_img_overlay_05"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="192dp"
-        android:layout_marginTop="677dp"
-        android:contentDescription="@string/app_name"
-        android:alpha="0.0">
-    </ImageView>
-    
-    
-    
-    <!-- Line Image -->
-    
-    
-    <ImageView
-        android:id="@+id/img_line01"
-        android:src="@drawable/info_01_img_line_01_up"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="452dp"
-        android:layout_marginTop="229dp"
-        android:contentDescription="@string/app_name"
-        >
-    </ImageView>
-    
+ 
 
-    
-    <ImageView
-        android:id="@+id/img_line02"
-        android:src="@drawable/info_01_img_line_02_up"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="486dp"
-        android:layout_marginTop="404dp"
-        android:contentDescription="@string/app_name"
-        >
-    </ImageView>
-    
-    <ImageView
-        android:id="@+id/img_line03"
-        android:src="@drawable/info_01_img_line_03_up"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="121dp"
-        android:layout_marginTop="444dp"
-        android:contentDescription="@string/app_name"
-        >
-    </ImageView>
-    
-    <ImageView
-        android:id="@+id/img_line04"
-        android:src="@drawable/info_01_img_line_04_up"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="607dp"
-        android:layout_marginTop="476dp"
-        android:contentDescription="@string/app_name"
-        >
-    </ImageView>
-
-
-    <ImageView
-        android:id="@+id/img_line05"
-        android:src="@drawable/info_01_img_line_05_up"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="121dp"
-        android:layout_marginTop="791dp"
-        android:contentDescription="@string/app_name"
-        >
-    </ImageView>
-
-	<!-- Line Overlay Image -->
 	    
     <!-- Button Image -->
     <ImageView

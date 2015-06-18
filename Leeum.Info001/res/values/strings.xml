@@ -14,6 +14,8 @@
     <string name="string_detail_btn03">Detail 03</string>
     <string name="string_detail_close">Return HDNavi</string>
     
+    
+    
     <string-array name="orientation_array">
         <item>Automatic</item>
         <item>Portrait</item>

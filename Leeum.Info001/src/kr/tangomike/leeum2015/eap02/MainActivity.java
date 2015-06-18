@@ -22,12 +22,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 // osc components 
@@ -56,6 +59,9 @@ public class MainActivity extends Activity {
 	
 	private static final int REQUEST_CODE_SETTINGS = 0;
 	
+	private static final int LANG_KOR = 0;
+	private static final int LANG_ENG = 1;
+	
 	private boolean drawAdditionalInfo;
 	private boolean sendPeriodicUpdates;
 	private int screenOrientation;
@@ -80,57 +86,81 @@ public class MainActivity extends Activity {
 	
 	// TODO 버튼 어레이 생성 
 	//ImageView for Buttons
-	private String PACKAGE_NAME;
-	private ArrayList<ImageView> btnImg;
-//	private ArrayList<ImageView> btnOverImg;
-	private ArrayList<ImageView> lineImg;
-// 	private ArrayList<ImageView> lineOverImg;	
-	private ArrayList<ImageView> overlayImg;
 
-	private Button btnKor, btnEng;
-	
-	
 	private boolean running;
+
+	private Button btn01, btn02, btn03, btn04, btnKor, btnEng;
+	
+	private ImageView imgBg, imgOverlay;
 	
 	@SuppressLint("DefaultLocale")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+//		setContentView(R.layout.activity_main);
 		
 		running = true;
 		sendPeriodicUpdates = true;
 		
 		SharedPreferences setting = this.getPreferences(MODE_PRIVATE);	
-		oscIP = setting.getString("myIP", "192.168.0.3");
-		oscPort = setting.getInt("myPort", 3334);
+		oscIP = "192.168.0.9"; //setting.getString("myIP", "192.168.0.9");
+		oscPort = 3333; //setting.getInt("myPort", 3333);
 		drawAdditionalInfo = setting.getBoolean("extraInfo", true);
 		
 		oscInterface = new OSCInterface(oscIP, oscPort);
 		
 		screenNumber = 0;
-		language = 0;
+		language = LANG_KOR;
 		
-		btnImg = new ArrayList<ImageView>();
-		lineImg = new ArrayList<ImageView>();
-		overlayImg = new ArrayList<ImageView>();
-		
-		PACKAGE_NAME = getApplicationContext().getPackageName();
 		
 		isTouched = false;
 		
 		// 새 액티비티를 열지 않고 이곳에서 ImageView의 애니메이션을 사용. 
 		// 각 버튼을 터치하거나 할 때 OSCInterface를 통해 통신 
-		Button btn01, btn02, btn03, btn04, btn05;
+
 		
 		
-		btn01 = (Button)findViewById(R.id.main_btn01);
-		btn02 = (Button)findViewById(R.id.main_btn02);
-		btn03 = (Button)findViewById(R.id.main_btn03);
-		btn04 = (Button)findViewById(R.id.main_btn04);
-		btn05 = (Button)findViewById(R.id.main_btn05);
-		btnKor = (Button)findViewById(R.id.main_btnKor);
-		btnEng = (Button)findViewById(R.id.main_btnEng);
+		RelativeLayout rlMain = new RelativeLayout(this);
+		
+		
+		rlMain.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		rlMain.setBackgroundColor(Color.BLACK);
+		
+		setContentView(rlMain);
+		
+		LayoutParams lParam = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		
+		
+		imgBg = new ImageView(this);
+		imgBg.setLayoutParams(lParam);
+		imgBg.setImageResource(R.drawable.eap_2_image);
+		imgBg.setX(0);
+		imgBg.setY(0);
+		rlMain.addView(imgBg);
+		
+		
+		
+		imgOverlay = new ImageView(this);
+		imgOverlay.setLayoutParams(lParam);
+		imgOverlay.setImageResource(R.drawable.info_01_btn_fake);
+		imgOverlay.setX(0);
+		imgOverlay.setY(0);
+		rlMain.addView(imgOverlay);
+		
+		
+		
+		
+		btn01 = new Button(this);
+		btn02 = new Button(this);
+		btn03 = new Button(this);
+		btn04 = new Button(this);
+		btnKor = new Button(this);
+		btnEng = new Button(this);
+		
+		btn01.setLayoutParams(lParam);
+		btn01.setBackgroundResource(R.drawable.eap_2_btn_1_up);
+		btn01.setX(59);
+		btn01.setY(1008);
 		
 		
 		btn01.setOnClickListener(new View.OnClickListener() {
@@ -149,20 +179,19 @@ public class MainActivity extends Activity {
 				
 				if(screenNumber != 1){
 					screenNumber = 1;
-					
 					setButtonStatus();
-					
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error", e.toString());}
-//					finally{setButtonStatus();}
-					
 				}
 				
 				
 			}
 		});
+		rlMain.addView(btn01);
 		
-		
+
+		btn02.setLayoutParams(lParam);
+		btn02.setBackgroundResource(R.drawable.eap_2_btn_2_up);
+		btn02.setX(238);
+		btn02.setY(1008);
 		btn02.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -178,18 +207,19 @@ public class MainActivity extends Activity {
 				
 				if(screenNumber != 2){
 					screenNumber = 2;
-					
 					setButtonStatus();
-					
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error", e.toString());}
-//					finally{setButtonStatus();}
-					
 				}
 			}
 		});
 		
+		rlMain.addView(btn02);
 		
+		
+		
+		btn03.setLayoutParams(lParam);
+		btn03.setBackgroundResource(R.drawable.eap_2_btn_3_up);
+		btn03.setX(417);
+		btn03.setY(1008);
 		btn03.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -205,18 +235,20 @@ public class MainActivity extends Activity {
 				
 				if(screenNumber != 3){
 					screenNumber = 3;
-					
 					setButtonStatus();
 					
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error", e.toString());}
-//					finally{setButtonStatus();}
-					
+
 				}
 			}
 		});
 		
+		rlMain.addView(btn03);
 		
+		
+		btn04.setLayoutParams(lParam);
+		btn04.setBackgroundResource(R.drawable.eap_2_btn_4_up);
+		btn04.setX(596);
+		btn04.setY(1008);
 		btn04.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -232,47 +264,21 @@ public class MainActivity extends Activity {
 				
 				if(screenNumber != 4){
 					screenNumber = 4;
-					
 					setButtonStatus();
-					
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error", e.toString());}
-//					finally{setButtonStatus();}
 					
 				}
 				
 			}
 		});
 		
-		
-		btn05.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				if(!isTouched){
-					isTouched = true;
-					mHandler.sendEmptyMessageDelayed(0, 1000);
-				}else{
-					tCounter = 0;
-				}
 
-				
-				if(screenNumber != 5){
-					screenNumber = 5;
-					
-					setButtonStatus();
-					
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error", e.toString());}
-//					finally{setButtonStatus();}
-					
-				}
-			}
-		});
+		rlMain.addView(btn04);
 		
 		
-		
+		btnKor.setLayoutParams(lParam);
+		btnKor.setBackgroundResource(R.drawable.eap_2_kor_down);
+		btnKor.setX(633);
+		btnKor.setY(39);
 		btnKor.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -284,21 +290,23 @@ public class MainActivity extends Activity {
 				}else{
 					tCounter = 0;
 				}
-
 				
-				if(language != 0){
-					language = 0;
+				if(language != LANG_KOR){
+					language = LANG_KOR;
 					setButtonStatus();
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error", e.toString());}
-//					finally{ setButtonStatus();}
 					
 				}
-				
+
 				
 			}
 		});
+
+		rlMain.addView(btnKor);
 		
+		btnEng.setLayoutParams(lParam);
+		btnEng.setBackgroundResource(R.drawable.eap_2_eng_up);
+		btnEng.setX(633);
+		btnEng.setY(97);
 		btnEng.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -310,25 +318,17 @@ public class MainActivity extends Activity {
 				}else{
 					tCounter = 0;
 				}
-
 				
-				if(language != 1){
-					language = 1;
-					
+				if(language != LANG_ENG){
+					language = LANG_ENG;
 					setButtonStatus();
-					
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error", e.toString());}
-//					finally{ setButtonStatus();}
-					}
-				
+				}
+
 				
 			}
 		});
-
-			
 	
-		
+		rlMain.addView(btnEng);
 
 		
 		mHandler = new Handler(){
@@ -343,15 +343,12 @@ public class MainActivity extends Activity {
 				}else if(tCounter > screenSaverOnTime){
 					tCounter = 0;
 					screenNumber = 0;
-					language = 0;
+					language = LANG_KOR;
 					isTouched = false;
 					
 					
 					setButtonStatus();
-					
-//					try{ sendOSCData(); }
-//					catch(Exception e){ android.util.Log.i("error: ", e.toString()); }
-//					finally{ setButtonStatus(); };
+
 				}
 			
 				
@@ -363,35 +360,11 @@ public class MainActivity extends Activity {
 		
 		
 		
-		// add button imageviews to array
-		for(int i = 0; i < 5; i++){
-			String str = String.format("img_btn%02d", i+1);
-			int rid = getResources().getIdentifier(str, "id", PACKAGE_NAME);
-			ImageView iv = (ImageView)findViewById(rid);
-			btnImg.add(iv);
-		}
+
 		
-		for(int i = 0; i < 5; i++){
-			String str = String.format("img_line%02d", i+1);
-			int rid = getResources().getIdentifier(str, "id", PACKAGE_NAME);
-			ImageView iv = (ImageView)findViewById(rid);
-			lineImg.add(iv);
-		}
-		
-		for(int i = 0; i < 5; i++){
-			String str = String.format("img_overlay%02d", i+1);
-			int rid = getResources().getIdentifier(str, "id", PACKAGE_NAME);
-			ImageView iv = (ImageView)findViewById(rid);
-			overlayImg.add(iv);
-		}
-		
-		setButtonStatus();
+//		setButtonStatus();
 		
 		startOSC();
-		
-//		try{ sendOSCData(); }
-//		catch(Exception e){ android.util.Log.i("error", e.toString());}
-//		finally{setButtonStatus();}
 		
 		
 		
@@ -409,61 +382,66 @@ public class MainActivity extends Activity {
 	
 	
 	private void setButtonStatus(){
+		// TODO 버튼 상태 처리 
 		
-		
-		// TODO 버튼 애니메이션 처리 
-		for(int i = 0; i < 5; i++){
+		switch(screenNumber){
+		default:
+		case 0: // screensaver;
+			btn01.setBackgroundResource(R.drawable.eap_2_btn_1_up);
+			btn02.setBackgroundResource(R.drawable.eap_2_btn_2_up);
+			btn03.setBackgroundResource(R.drawable.eap_2_btn_3_up);
+			btn04.setBackgroundResource(R.drawable.eap_2_btn_4_up);
+			imgOverlay.setImageResource(R.drawable.info_01_btn_fake);
+			break;
 			
-			ImageView iv = btnImg.get(i);
-			if(screenNumber == i+1){
-				iv.setImageResource(R.drawable.info_01_btn_down);
-			}else{
-				iv.setImageResource(R.drawable.info_01_btn_up);
-			}
+			
+		case 1:
+			btn01.setBackgroundResource(R.drawable.eap_2_btn_1_down);
+			btn02.setBackgroundResource(R.drawable.eap_2_btn_2_up);
+			btn03.setBackgroundResource(R.drawable.eap_2_btn_3_up);
+			btn04.setBackgroundResource(R.drawable.eap_2_btn_4_up);
+			imgOverlay.setImageResource(R.drawable.eap_2_overlay_1);
+			break;
+			
+		case 2:
+			btn01.setBackgroundResource(R.drawable.eap_2_btn_1_up);
+			btn02.setBackgroundResource(R.drawable.eap_2_btn_2_down);
+			btn03.setBackgroundResource(R.drawable.eap_2_btn_3_up);
+			btn04.setBackgroundResource(R.drawable.eap_2_btn_4_up);
+			imgOverlay.setImageResource(R.drawable.eap_2_overlay_2);
+			break;
+			
+		case 3:
+			btn01.setBackgroundResource(R.drawable.eap_2_btn_1_up);
+			btn02.setBackgroundResource(R.drawable.eap_2_btn_2_up);
+			btn03.setBackgroundResource(R.drawable.eap_2_btn_3_down);
+			btn04.setBackgroundResource(R.drawable.eap_2_btn_4_up);
+			imgOverlay.setImageResource(R.drawable.eap_2_overlay_3);
+			break;
+			
+		case 4:
+			btn01.setBackgroundResource(R.drawable.eap_2_btn_1_up);
+			btn02.setBackgroundResource(R.drawable.eap_2_btn_2_up);
+			btn03.setBackgroundResource(R.drawable.eap_2_btn_3_up);
+			btn04.setBackgroundResource(R.drawable.eap_2_btn_4_down);
+			imgOverlay.setImageResource(R.drawable.eap_2_overlay_4);
+			break;
+
 		}
-	
-		
-		// TODO 라인 애니메이션 처리 
-		for(int i = 0; i < 5; i++){
-			
-			ImageView iv = lineImg.get(i);
-			
-			if(screenNumber == i+1){
-				String str = String.format("info_01_img_line_%02d_down", i+1);
-				int rid = getResources().getIdentifier(str, "drawable", PACKAGE_NAME);
-				iv.setImageResource(rid);
-			}else{
-				String str = String.format("info_01_img_line_%02d_up", i+1);
-				int rid = getResources().getIdentifier(str, "drawable", PACKAGE_NAME);
-				iv.setImageResource(rid);
-			}
-		}
 		
 		
-		// TODO Overlay 애니메이션 처리 
 		
-		for(int i = 0; i < 5; i++){
-			
-			ImageView iv = overlayImg.get(i);
-			
-			if(screenNumber == i+1){
-				iv.setAlpha(1.0f);
-			}else{
-				iv.setAlpha(0.0f);
-			}
-		}
-		
+
 		// TODO 언어버튼 이미지 토글 처리 
-		if(language == 0){
-			
-			btnKor.setBackgroundResource(R.drawable.info_01_img_kor_on);
-			btnEng.setBackgroundResource(R.drawable.info_01_img_eng_off);
-			
+		
+		if(language == LANG_KOR){
+			btnKor.setBackgroundResource(R.drawable.eap_2_kor_down);
+			btnEng.setBackgroundResource(R.drawable.eap_2_eng_up);
 		}else{
-			
-			btnKor.setBackgroundResource(R.drawable.info_01_img_kor_off);
-			btnEng.setBackgroundResource(R.drawable.info_01_img_eng_on);
+			btnKor.setBackgroundResource(R.drawable.eap_2_kor_up);
+			btnEng.setBackgroundResource(R.drawable.eap_2_eng_down);
 		}
+
 		
 	}
 	
@@ -603,7 +581,7 @@ public class MainActivity extends Activity {
 		oscInterface.sendOSCBundle(oscBundle);
 		
 		
-//		android.util.Log.i("osc ", outputData.toString());
+		android.util.Log.i("osc ", outputData.toString());
 	}
 	
 	public void setNewOSCConnection (String oscIP, int oscPort){	
