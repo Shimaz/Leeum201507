@@ -103,7 +103,7 @@ public class MainActivity extends Activity {
 		sendPeriodicUpdates = true;
 		
 		SharedPreferences setting = this.getPreferences(MODE_PRIVATE);	
-		oscIP = "192.168.0.9"; //setting.getString("myIP", "192.168.0.9");
+		oscIP = "192.168.0.14"; //setting.getString("myIP", "192.168.0.9");
 		oscPort = 3333; //setting.getInt("myPort", 3333);
 		drawAdditionalInfo = setting.getBoolean("extraInfo", true);
 		

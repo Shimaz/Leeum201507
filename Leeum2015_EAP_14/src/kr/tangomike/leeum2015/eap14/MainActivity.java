@@ -24,9 +24,9 @@ import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.*;
-import android.view.ViewGroup.LayoutParams;
 //import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
+//import android.view.ViewGroup.LayoutParams;
+//import android.widget.ImageView;
 import android.widget.Toast;
 import android.hardware.*;
 import java.net.*;
@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
         SharedPreferences settings = this.getPreferences(MODE_PRIVATE);
       
         /* get Values */
-        oscIP = settings.getString("myIP", "192.168.0.9");
+        oscIP = settings.getString("myIP", "192.168.0.11");
         oscPort = settings.getInt("myPort", 3333);
         drawAdditionalInfo = settings.getBoolean("ExtraInfo", false);
         sendPeriodicUpdates = settings.getBoolean("VerboseTUIO", true);
