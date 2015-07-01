@@ -1,9 +1,10 @@
 /*
+ TUIOdroid http://www.tuio.org/
  An Open Source TUIO Tracker for Android
- 
+ (c) 2011 by Tobias Schwirten and MArtin Kaltenbrunner 
  TUIOdroid is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
- the Free iSoftware Foundation, either version 3 of the License, or
+ the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
  
  TUIOdroid is distributed in the hope that it will be useful,
@@ -15,7 +16,7 @@
  along with TUIOdroid.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package kr.tangomike.hoam.hdnavi20131202;
+package kr.tangomike.leeum2015.eap10;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -23,10 +24,11 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-import kr.tangomike.hoam.hdnavi20131202.TuioPoint;
+import kr.tangomike.leeum2015.eap10.TuioPoint;
 
 
 import tuioDroid.osc.OSCInterface;
+//import tuioDroid.impl.R;
 
 
 import com.illposed.osc.OSCBundle;
@@ -36,34 +38,28 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.*;
 import android.graphics.Paint.*;
-import android.os.Handler;
-import android.os.Message;
 import android.view.*;
 
 /**
  * Main View
- * @author Tobias Schwirten
- * @author Martin Kaltenbrunner
  */
 
 
 
 
-@SuppressLint({ "HandlerLeak", "ViewConstructor" })
+@SuppressLint({ "HandlerLeek", "ViewConstructor", "DefaultLocale" })
 public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private static final int MAX_TOUCHPOINTS = 2;
 	private static final int FRAME_RATE = 60;
 	private Paint textPaint = new Paint();
 	private Paint dataPaint = new Paint();
-	private Paint touchAreaPaint = new Paint();
-
+	private Paint bgPaint = new Paint();
 	
 	
 	private ArrayList<TuioPoint> tuioPoints;
 	
-	@SuppressWarnings("unused")
-	private int width, height;
+	private int height;
 	private float scale = 1.0f;
 	
 	private OSCInterface oscInterface ;
@@ -81,6 +77,10 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	private long lastTime = 0;
 
 	private Bitmap backgroundImage;
+	private Bitmap bgImg;
+	
+	
+	private ArrayList<Bitmap> bgArr;
 
 	private boolean running = false;
 	
@@ -91,21 +91,16 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint navShadowPaint = new Paint();
 
 	
-	private static final float defaultNavScale = 146.0f; 
-	private static final float defaultNavX = 400.0f;
-	private static final float defaultNavY = 584.0f;
-	private static final float minNavScale = 51.0f / 2.0f;
-	private static final float maxNavScale = 551.0f / 2.0f;
+	private static final float maxNavScale = 289.0f;
 	
-	//background position
-	private static final int bgX = 125;
-	private static final int bgY = 7;
 	
-	//boundary limit 
-	private static final int boundaryLeft = 125;
-	private static final int boundaryTop = 7;
-	private static final int boundaryRight = 676;
-	private static final int boundaryBottom = 1224;
+	private static final int defaultNavScale = 154; 
+	private static final int defaultNavX = 400;
+	private static final int defaultNavY = 548;
+	private static final float minNavScale = 78.5f;
+
+	
+	
 	
 	
 	private float navX = defaultNavX;
@@ -123,34 +118,42 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private boolean insideNav = false;
 	
-	private int screenSaver = 0;
+	public int screenSaver = 0;
 	
-	private static int navMargin = 100;
+	private static int navMargin = 50;
 	
 	
 	private int mode = 0;
 	
+	public int imageNumber = 1;
+	public int isSeekBarTouched = 0;
 	
 	private Bitmap arrowUp, arrowDown, arrowLeft, arrowRight, uiHand;
+	////////////////////
+	
+	// Boundary Limit
+	private static final int boundaryLeft = 111;
+	private static final int boundaryTop = 34;
+	private static final int boundaryRight = 689;
+	private static final int boundaryBottom = 1062;
+	
+	private static final int centerMargin = 45;
+	
+	
+	private int bgX = 264;
+	private int bgY = 276;
+	private int bgRight = 536;
+	private int bgBottom = 877;
+	
+	
+	
 
 	
 	
 	
 	
-	
-
-	
-	// Timer
-
-	public long tCounter = 0;
-	public long screenSaverOnTime = 60;
-	private final int exitTime = 180;
-	Handler mHandler;
-	
-	
-	
-	
-
+ 
+	public String PACKAGE_NAME;
 
 	
 	/**
@@ -160,6 +163,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	 * @param oscIP
 	 * @param oscPort
 	 */
+	@SuppressLint("HandlerLeak")
 	public TouchView(Context context, String oscIP, int oscPort, boolean drawAdditionalInfo, boolean sendPeriodicUpdates) {
 		super(context, null);
 		oscInterface  = new OSCInterface(oscIP , oscPort);
@@ -193,75 +197,42 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		navShadowPaint.setAntiAlias(true);
 		 
 		
-		touchAreaPaint.setColor(Color.WHITE);
-		touchAreaPaint.setStrokeWidth(40);
-		touchAreaPaint.setStyle(Style.STROKE);
-		touchAreaPaint.setAlpha(64);
-		touchAreaPaint.setAntiAlias(true);
+		bgPaint.setColor(Color.BLACK);
+		bgPaint.setStyle(Style.FILL);
 		
 		
+		PACKAGE_NAME = context.getPackageName();
+		bgArr = new ArrayList<Bitmap>();
 		
-		backgroundImage = BitmapFactory.decodeResource(getResources(), R.drawable.bg_portrait);
+		for (int i = 0; i < 72; i++){
+			
+			String str = String.format("%d", i+1);
+			int ir = getResources().getIdentifier("eap_10_" + str, "raw", PACKAGE_NAME);
+			Bitmap tmpBmp;
+			tmpBmp = BitmapFactory.decodeResource(getResources(), ir);
+			
+			bgArr.add(tmpBmp);
+			
+		}
+		
+		backgroundImage = bgArr.get(0);
+		bgImg = BitmapFactory.decodeResource(getResources(), R.drawable.rot_bg_1232);
+        
 		
 		arrowUp = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_arrow_up);
 		arrowDown = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_arrow_down);
 		arrowLeft = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_arrow_left);
 		arrowRight = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_arrow_right);
 		uiHand = BitmapFactory.decodeResource(getResources(), R.drawable.ui_nav_hand);
-	
 		
-        mHandler = new Handler() {
-        	public void handleMessage(Message msg){
-        		tCounter++;
-        		
 
-
-        			
-        		if(tCounter <= screenSaverOnTime){
-
-            		mHandler.sendEmptyMessageDelayed(0, 1000);
-            		android.util.Log.i("count", " "+ tCounter);
-            	
-        		}else if(tCounter > screenSaverOnTime && tCounter < exitTime){
-        			
-        			tCounter = 0;
-        			screenSaver = 0;
-        			navX = defaultNavX;
-        			navY = defaultNavY;
-        			navScale = defaultNavScale;
-        			navPaint.setColor(Color.rgb(0, 191, 174));
-        			
-        			Canvas c = getHolder().lockCanvas();
-    
-        			if(c != null)
-        			{
-        				
-        				
-						c.drawColor(Color.BLACK);
-						c.drawBitmap(backgroundImage,bgX,bgY,null);
-        				c.drawRect(navX - navScale + 4, navY - (navScale / 9*16) + 4, navX + navScale + 4, navY + (navScale / 9*16) + 4, navShadowPaint);			
-            			c.drawRect(navX - navScale, navY - (navScale / 9*16), navX + navScale, navY + (navScale / 9*16), navPaint);
-
-            			// ui guide 
-            			c.drawBitmap(arrowLeft, navX-(navScale + 10 + arrowLeft.getWidth()), navY - (arrowLeft.getHeight()/2), null);
-            			c.drawBitmap(arrowRight, navX+(navScale + 10), navY - (arrowRight.getHeight()/2), null);
-            			c.drawBitmap(arrowUp, navX - (arrowUp.getWidth()/2), navY - ((navScale / 9*16) + 10 + arrowUp.getHeight()), null);
-            			c.drawBitmap(arrowDown, navX - (arrowDown.getWidth()/2), navY + ((navScale / 9*16) + 10), null);
-            			c.drawBitmap(uiHand, navX - uiHand.getWidth()/2, navY - uiHand.getHeight()/2, null);
-
-        			}
-        			getHolder().unlockCanvasAndPost(c);
-        		}
-        		
-        		else{
-        			android.util.Log.i("count", "exit");
-        		}
-        		
-        		
-        	}
-        };
         
 		
+        
+//        mHandler.sendEmptyMessage(0);
+        
+//        width = this.getWidth();
+//        height = this.getHeight();
         
         
 	}
@@ -271,10 +242,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	
 
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-	
+	public boolean retreiveTouchEvent(MotionEvent event){
 		long timeStamp = System.currentTimeMillis() - startTime;
 		long dt = timeStamp - lastTime;
 		lastTime = timeStamp;
@@ -283,33 +251,30 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		if ((event.getAction() == MotionEvent.ACTION_DOWN) || (event.getAction() == MotionEvent.ACTION_UP)) dt = 1000;
 
 		int pointerCount = event.getPointerCount();
+		//android.util.Log.v("PointerCount",""+pointerCount);
 		
 		if (pointerCount > MAX_TOUCHPOINTS) {
 			pointerCount = MAX_TOUCHPOINTS;
 		}
 		
 		
+		
+		
 		Canvas c = getHolder().lockCanvas();
 		
-		if(screenSaver == 1 && tCounter >= exitTime){
-			
-			screenSaver = 0;
-			
-		}
 		
 		
-		if(screenSaver == 0 /*&& tCounter > screenSaverOnTime*/){
+		if(screenSaver == 0){
 			
-			mHandler.sendEmptyMessage(0);
 			
 		}
 		screenSaver = 1;
-		tCounter = 0;
 		
 		
 		
 		if (c != null) {
-			c.drawColor(Color.BLACK);
+			c.drawBitmap(bgImg, 0, 0, null);
+			c.drawRect(boundaryLeft, boundaryTop, boundaryRight, boundaryBottom, bgPaint);
 			c.drawBitmap(backgroundImage,bgX,bgY,null);
 			
 			
@@ -325,6 +290,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 						&& event.getY(0) < navY + (navScale/9*16) + navMargin){
 					xDif = navX - event.getX(0);
 					yDif = navY - event.getY(0);
+//					difShow = 1;
 					
 					
 					insideNav = true;
@@ -349,6 +315,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 						xDif = navX - event.getX(0);
 						yDif = navY - event.getY(0);
 						
+//						difShow = 262;
 						
 						
 						insideNav = true;
@@ -465,31 +432,35 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 				navScale = minNavScale;
 			}
 			
-			// Center Limit
-			if(navX <= bgX){
-				navX = bgX;
-			}
-			if(navX >= (bgX + backgroundImage.getWidth())){
-				navX = bgX + backgroundImage.getWidth();
-			}
-			if(navY <= bgY){
-				navY = bgY;
-			}
-			if(navY >= (bgY + backgroundImage.getHeight())){
-				navY = bgY + backgroundImage.getHeight();
-			}
 			
+			// Center Boundary limit
+			
+			if(navX <= bgX + centerMargin){ // left
+				navX = bgX + centerMargin;
+			}
+			if(navX >= bgRight - centerMargin){ // right
+				navX = bgRight - centerMargin;
+			}
+			if(navY <= bgY + centerMargin){ // top
+				navY = bgY + centerMargin;
+			}
+			if(navY >= bgBottom - centerMargin){ // bottom
+				navY = bgBottom - centerMargin;
+			}
+				
 			
 			// Boundary Limit
-			if(navX-navScale <= boundaryLeft){
+			if(navX-navScale <= boundaryLeft)
+			{
 				navX = boundaryLeft + navScale;
 			}
-			if(navX + navScale >= boundaryRight){
-				navX =  boundaryRight - navScale;;	
+			if(navX + navScale >= boundaryRight)
+			{
+				navX =  boundaryRight- navScale;	
 			}
 			if(navY - (navScale/9*16) <= boundaryTop)
 			{
-				navY = boundaryTop + (navScale/9*16);
+				navY  = (navScale/9*16) + boundaryTop;
 			}
 			if(navY + (navScale/9*16) >= boundaryBottom)
 			{
@@ -499,6 +470,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 			
 						
 			if(navScale > maxNavScale - 1 || navScale < minNavScale + 1){
+				//navPaint.setColor(0xffec008c);
 				navPaint.setColor(Color.RED);
 				
 			}else
@@ -521,9 +493,6 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 			// Navigator
 			c.drawRect(navX - navScale, navY - (navScale / 9*16), navX + navScale, navY + (navScale / 9*16), navPaint);
 			
-			if(navScale < minNavScale + navMargin/2){
-				c.drawRect(navX - navScale - 20, navY - (navScale / 9*16) - 20, navX + navScale + 20, navY + (navScale / 9*16) + 20, touchAreaPaint);
-			}
 			
 
 			
@@ -531,7 +500,11 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 			getHolder().unlockCanvasAndPost(c);
 
 		}
-//		MEOld = event.getAction();
+		
+		
+
+		
+		
 		
 		if ((!sendPeriodicUpdates) && (dt>(1000/FRAME_RATE)) ) sendTUIOdata();
 		return true;
@@ -541,6 +514,31 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		
 	}
 	
+	
+	public void setBGImg(){
+		
+//		PACKAGE_NAME = this.getContext().getPackageName();
+//		String str = String.format("%02d", imageNumber);
+//		int ir = getResources().getIdentifier("r_" + str + "_sec", "raw", PACKAGE_NAME);
+		
+//		backgroundImage = BitmapFactory.decodeResource(getResources(), ir);
+		
+		backgroundImage = bgArr.get(imageNumber-1);
+		
+		
+		Canvas c = getHolder().lockCanvas();
+		
+		if (c != null) {
+			c.drawBitmap(bgImg, 0, 0, null);
+			c.drawRect(boundaryLeft, boundaryTop, boundaryRight, boundaryBottom, bgPaint);
+			c.drawBitmap(backgroundImage,bgX,bgY,null);
+			c.drawRect(navX - navScale + 4, navY - (navScale / 9*16) + 4, navX + navScale + 4, navY + (navScale / 9*16) + 4, navShadowPaint);			
+			c.drawRect(navX - navScale, navY - (navScale / 9*16), navX + navScale, navY + (navScale / 9*16), navPaint);
+			getHolder().unlockCanvasAndPost(c);
+		}
+		
+		
+	}
 
 	
 	private void drawInfo(Canvas c) {
@@ -573,17 +571,22 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		OSCBundle oscBundle = new OSCBundle();
 		
 		// Navigator Data Message
-		Object outputData[] = new Object[4];
+		Object outputData[] = new Object[6];
 		
-		outputData[0] = (Float) navX;
-		outputData[1] = (Float) navY;
+		outputData[0] = (Float) (navX - bgX - navScale);
+		outputData[1] = (Float) (navY - bgY - (navScale / 9*16));
 		outputData[2] = (Float) navScale;
 		outputData[3] = (Integer) screenSaver;
+		outputData[4] = (Integer) imageNumber;
+		outputData[5] = (Integer) isSeekBarTouched;
+		
 		
 		oscBundle.addPacket(new OSCMessage("/Void/Leeum", outputData));
 		
 
 		oscInterface.sendOSCBundle(oscBundle);
+		
+		
 	}
 
 	
@@ -594,7 +597,7 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		android.util.Log.i("surface", "changed");
 		
-		this.width = width;
+//		this.width = width;
 		this.height = height;
 		if (width > height) {
 			this.scale = width / 480f;
@@ -605,20 +608,19 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		Canvas c = getHolder().lockCanvas();
 		
 		if (c != null) {
-			// clear screen
-			c.drawColor(Color.BLACK);
+			c.drawBitmap(bgImg, 0, 0, null);
+			c.drawRect(boundaryLeft, boundaryTop, boundaryRight, boundaryBottom, bgPaint);
 			c.drawBitmap(backgroundImage,bgX,bgY,null);
 			c.drawRect(navX - navScale + 4, navY - (navScale / 9*16) + 4, navX + navScale + 4, navY + (navScale / 9*16) + 4, navShadowPaint);			
 			c.drawRect(navX - navScale, navY - (navScale / 9*16), navX + navScale, navY + (navScale / 9*16), navPaint);
 
 			
 			// ui guide 
-			c.drawBitmap(arrowLeft, navX-(navScale + 10 + arrowLeft.getWidth()), navY - (arrowLeft.getHeight()/2), null);
+			c.drawBitmap(arrowLeft, navX-(navScale + 10 + arrowUp.getWidth()), navY - (arrowLeft.getHeight()/2), null);
 			c.drawBitmap(arrowRight, navX+(navScale + 10), navY - (arrowRight.getHeight()/2), null);
 			c.drawBitmap(arrowUp, navX - (arrowUp.getWidth()/2), navY - ((navScale / 9*16) + 10 + arrowUp.getHeight()), null);
 			c.drawBitmap(arrowDown, navX - (arrowDown.getWidth()/2), navY + ((navScale / 9*16) + 10), null);
 			c.drawBitmap(uiHand, navX - uiHand.getWidth()/2, navY - uiHand.getHeight()/2, null);
-
 			
 			if ((!oscInterface.isReachable()) || (drawAdditionalInfo)) drawInfo(c);
 			getHolder().unlockCanvasAndPost(c);
@@ -645,18 +647,19 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		    		  sourceName = "TUIOdroid@"+getLocalIpAddress();
 		    		  Canvas c = getHolder().lockCanvas();
 		    		  if (c != null) {
-		    				c.drawColor(Color.BLACK);
+		    				c.drawBitmap(bgImg, 0, 0, null);
+		    				c.drawRect(boundaryLeft, boundaryTop, boundaryRight, boundaryBottom, bgPaint);
 		    				c.drawBitmap(backgroundImage,bgX,bgY,null);
 		    				c.drawRect(navX - navScale + 4, navY - (navScale / 9*16) + 4, navX + navScale + 4, navY + (navScale / 9*16) + 4, navShadowPaint);			
 		    				c.drawRect(navX - navScale, navY - (navScale / 9*16), navX + navScale, navY + (navScale / 9*16), navPaint);
 
-		    				// ui guide 
-	            			c.drawBitmap(arrowLeft, navX-(navScale + 10 + arrowLeft.getWidth()), navY - (arrowLeft.getHeight()/2), null);
+		    				
+	            			// ui guide 
+	            			c.drawBitmap(arrowLeft, navX-(navScale + 10 + arrowUp.getWidth()), navY - (arrowLeft.getHeight()/2), null);
 	            			c.drawBitmap(arrowRight, navX+(navScale + 10), navY - (arrowRight.getHeight()/2), null);
 	            			c.drawBitmap(arrowUp, navX - (arrowUp.getWidth()/2), navY - ((navScale / 9*16) + 10 + arrowUp.getHeight()), null);
 	            			c.drawBitmap(arrowDown, navX - (arrowDown.getWidth()/2), navY + ((navScale / 9*16) + 10), null);
 	            			c.drawBitmap(uiHand, navX - uiHand.getWidth()/2, navY - uiHand.getHeight()/2, null);
-
 		    				
 		    				
 		    				if (!network || drawAdditionalInfo) drawInfo(c);
@@ -677,10 +680,6 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		
 
-//		Timer timer = new Timer();
-//		timer.schedule(myTimer, 1000, 1000);
-//		
-		
 		
 	}
 	
@@ -696,7 +695,6 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 		startTime = System.currentTimeMillis();
 		lastTime = 0;
 		
-		tCounter = exitTime;
 	
 	}
 		
@@ -726,6 +724,41 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
         return "127.0.0.1";
         
         
+    	
+    }
+    
+    public void resetToDefault(){
+    	
+    	
+    	
+    	screenSaver = 0;
+		navX = defaultNavX;
+		navY = defaultNavY;
+		navScale = defaultNavScale;
+		navPaint.setColor(Color.rgb(0, 191, 174));
+		
+		setBGImg();
+		
+		Canvas c = getHolder().lockCanvas();
+
+		if(c != null)
+		{
+			
+			c.drawBitmap(bgImg, 0, 0, null);
+			c.drawRect(boundaryLeft, boundaryTop, boundaryRight, boundaryBottom, bgPaint);
+			c.drawBitmap(backgroundImage,bgX,bgY,null);
+			c.drawRect(navX - navScale + 4, navY - (navScale / 9*16) + 4, navX + navScale + 4, navY + (navScale / 9*16) + 4, navShadowPaint);			
+			c.drawRect(navX - navScale, navY - (navScale / 9*16), navX + navScale, navY + (navScale / 9*16), navPaint);
+			
+			// ui guide 
+			c.drawBitmap(arrowLeft, navX-(navScale + 10 + arrowUp.getWidth()), navY - (arrowLeft.getHeight()/2), null);
+			c.drawBitmap(arrowRight, navX+(navScale + 10), navY - (arrowRight.getHeight()/2), null);
+			c.drawBitmap(arrowUp, navX - (arrowUp.getWidth()/2), navY - ((navScale / 9*16) + 10 + arrowUp.getHeight()), null);
+			c.drawBitmap(arrowDown, navX - (arrowDown.getWidth()/2), navY + ((navScale / 9*16) + 10), null);
+			c.drawBitmap(uiHand, navX - uiHand.getWidth()/2, navY - uiHand.getHeight()/2, null);
+		}
+		getHolder().unlockCanvasAndPost(c);
+    	
     	
     }
 

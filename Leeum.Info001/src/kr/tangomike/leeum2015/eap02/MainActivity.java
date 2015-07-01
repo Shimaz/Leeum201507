@@ -457,7 +457,7 @@ public class MainActivity extends Activity {
 		if(isConfigurable && event.getPointerCount() == 4 && event.getAction() == MotionEvent.ACTION_POINTER_UP)
 		{
 			
-			openSettingsActivity();
+//			openSettingsActivity();
 		}
 		
 		return super.onTouchEvent(event);

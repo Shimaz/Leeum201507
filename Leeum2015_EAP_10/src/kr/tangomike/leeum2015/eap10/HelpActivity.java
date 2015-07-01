@@ -17,7 +17,7 @@
  along with TUIOdroid.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package kr.tangomike.hoam.hdnavi20131202;
+package kr.tangomike.leeum2015.eap10;
 
 import android.app.Activity;
 import android.os.Bundle;

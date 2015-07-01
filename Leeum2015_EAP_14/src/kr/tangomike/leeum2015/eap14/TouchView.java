@@ -95,17 +95,17 @@ public class TouchView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final float defaultNavX = 640.0f;
 	private static final float defaultNavY = 377.0f;
 	private static final float minNavScale = 105.5f;
-	private static final float maxNavScale = 614.0f;
+	private static final float maxNavScale = 525.5f;
 	
 	//background position
 	private static final int bgX = 20;
-	private static final int bgY = 31;
+	private static final int bgY = 81;
 	
 	//boundary limit 
 	private static final int boundaryLeft = 20;
-	private static final int boundaryTop = 31;
+	private static final int boundaryTop = 81;
 	private static final int boundaryRight = 1260;
-	private static final int boundaryBottom = 722;;
+	private static final int boundaryBottom = 672;
 	
 	
 	private float navX = defaultNavX;

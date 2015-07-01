@@ -99,6 +99,7 @@ public class MainActivity extends Activity {
       
         /* get Values */
         oscIP = settings.getString("myIP", "192.168.0.11");
+//        oscIP = settings.getString("myIP", "192.168.0.125");
         oscPort = settings.getInt("myPort", 3333);
         drawAdditionalInfo = settings.getBoolean("ExtraInfo", false);
         sendPeriodicUpdates = settings.getBoolean("VerboseTUIO", true);
